@@ -1,19 +1,32 @@
-import * as core from '@actions/core';
-import {wait} from './wait'
+import * as core from '@actions/core'
+import { exec } from 'child_process'
+
+const getCommitMessageCommand = 'git log -n 1 --pretty="format:%s" | tail'
+const publish = 'npx lerna publish -y'
 
 async function run() {
   try {
-    const ms = core.getInput('milliseconds');
-    console.log(`Waiting ${ms} milliseconds ...`)
+    exec(getCommitMessageCommand, (err, stdout) => {
+      if (err) throw err
+      if (stdout.includes('BREAKING CHANGE')) {
+        exec(`${publish} major`)
+      } else if (stdout.includes('FEATURE')) {
+        exec(`${publish} minor`)
+      } else if (stdout.includes('PATCH')) {
+        exec(`${publish} patch`)
+      } else {
+        core.info(`Commit message didn't contain:
+\t* BREAKING CHANGE
+\t* FEATURE
+\t* PATCH
 
-    core.debug((new Date()).toTimeString())
-    await wait(parseInt(ms, 10));
-    core.debug((new Date()).toTimeString())
-
-    core.setOutput('time', new Date().toTimeString());
+Skipping publishing
+`)
+      }
+    })
   } catch (error) {
-    core.setFailed(error.message);
+    core.setFailed(error.message)
   }
 }
 
-run();
+run()

@@ -1,10 +1,6 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
-inputs:
-  myInput:              # change this
-    description: 'input description here'
-    default: 'default value if applicable'
+name: 'Lerna semantic publish'
+description: 'Publishes using lerna, based on commit messages'
+author: 'The Agile Monkeys'
 runs:
   using: 'node12'
   main: 'lib/main.js'
