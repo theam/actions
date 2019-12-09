@@ -27,13 +27,19 @@ function run() {
                 if (err)
                     throw err;
                 if (stdout.includes('BREAKING CHANGE')) {
-                    child_process_1.exec(`${publish} major`);
+                    child_process_1.exec(`${publish} major`, (_, stdout) => {
+                        core.info(stdout);
+                    });
                 }
                 else if (stdout.includes('FEATURE')) {
-                    child_process_1.exec(`${publish} minor`);
+                    child_process_1.exec(`${publish} minor`, (_, stdout) => {
+                        core.info(stdout);
+                    });
                 }
                 else if (stdout.includes('PATCH')) {
-                    child_process_1.exec(`${publish} patch`);
+                    child_process_1.exec(`${publish} patch`, (_, stdout) => {
+                        core.info(stdout);
+                    });
                 }
                 else {
                     core.info(`Commit message didn't contain:
