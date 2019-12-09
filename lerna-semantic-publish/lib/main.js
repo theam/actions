@@ -27,18 +27,27 @@ function run() {
                 if (err)
                     throw err;
                 if (stdout.includes('BREAKING CHANGE')) {
-                    child_process_1.exec(`${publish} major`, (_, stdout) => {
+                    child_process_1.exec(`${publish} major`, (err, stdout, stderr) => {
                         core.info(stdout);
+                        core.error(stderr);
+                        if (err)
+                            throw err;
                     });
                 }
                 else if (stdout.includes('FEATURE')) {
-                    child_process_1.exec(`${publish} minor`, (_, stdout) => {
+                    child_process_1.exec(`${publish} minor`, (err, stdout, stderr) => {
                         core.info(stdout);
+                        core.error(stderr);
+                        if (err)
+                            throw err;
                     });
                 }
                 else if (stdout.includes('PATCH')) {
-                    child_process_1.exec(`${publish} patch`, (_, stdout) => {
+                    child_process_1.exec(`${publish} patch`, (err, stdout, stderr) => {
                         core.info(stdout);
+                        core.error(stderr);
+                        if (err)
+                            throw err;
                     });
                 }
                 else {

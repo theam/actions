@@ -9,16 +9,22 @@ async function run() {
     exec(getCommitMessageCommand, (err, stdout) => {
       if (err) throw err
       if (stdout.includes('BREAKING CHANGE')) {
-        exec(`${publish} major`, (_, stdout) => {
+        exec(`${publish} major`, (err, stdout, stderr) => {
           core.info(stdout)
+          core.error(stderr)
+          if (err) throw err
         })
       } else if (stdout.includes('FEATURE')) {
-        exec(`${publish} minor`, (_, stdout) => {
+        exec(`${publish} minor`, (err, stdout, stderr) => {
           core.info(stdout)
+          core.error(stderr)
+          if (err) throw err
         })
       } else if (stdout.includes('PATCH')) {
-        exec(`${publish} patch`, (_, stdout) => {
+        exec(`${publish} patch`, (err, stdout, stderr) => {
           core.info(stdout)
+          core.error(stderr)
+          if (err) throw err
         })
       } else {
         core.info(`Commit message didn't contain:
