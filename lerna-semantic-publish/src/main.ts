@@ -7,6 +7,10 @@ const publish = 'npx lerna publish -y'
 async function run() {
   try {
     exec(getCommitMessageCommand, (err, stdout) => {
+      exec(`npm config set //registry.npmjs.org/:_authToken ${process.env.NPM_TOKEN}`, (err, stdout) => {
+        core.info(stdout)
+        if (err) throw err
+      })
       if (err) throw err
       if (stdout.includes('BREAKING CHANGE')) {
         exec(`${publish} major`, (err, stdout, stderr) => {
