@@ -16,7 +16,7 @@ async function run() {
   try {
     exec(getCommitMessageCommand, (err, stdout) => {
       if (err) throw err
-      runComm('lerna bootstrap')
+      runComm('npx lerna bootstrap')
       runComm(`npm config set //registry.npmjs.org/:_authToken ${process.env.NPM_TOKEN}`)
       if (stdout.includes('BREAKING CHANGE')) {
         runComm(`${publish} major`)
