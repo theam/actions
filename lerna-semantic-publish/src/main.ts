@@ -2,7 +2,7 @@ import * as core from '@actions/core'
 import { exec } from 'child_process'
 
 const getCommitMessageCommand = 'git log -n 1 --pretty="format:%s" | tail'
-const publish = 'npx lerna publish -y'
+const publish = 'npx lerna publish --loglevel debug -y'
 
 async function run() {
   try {
