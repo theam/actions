@@ -19,36 +19,31 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(require("@actions/core"));
 const child_process_1 = require("child_process");
 const getCommitMessageCommand = 'git log -n 1 --pretty="format:%s" | tail';
-const publish = 'npx lerna publish -y';
+const publish = 'npx lerna publish --loglevel debug -y';
+function runComm(command) {
+    child_process_1.exec(command, (err, stdout, stderr) => {
+        core.info(stdout);
+        core.error(stderr);
+        if (err)
+            throw err;
+    });
+}
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             child_process_1.exec(getCommitMessageCommand, (err, stdout) => {
                 if (err)
                     throw err;
+                runComm('lerna bootstrap');
+                runComm(`npm config set //registry.npmjs.org/:_authToken ${process.env.NPM_TOKEN}`);
                 if (stdout.includes('BREAKING CHANGE')) {
-                    child_process_1.exec(`${publish} major`, (err, stdout, stderr) => {
-                        core.info(stdout);
-                        core.error(stderr);
-                        if (err)
-                            throw err;
-                    });
+                    runComm(`${publish} major`);
                 }
                 else if (stdout.includes('FEATURE')) {
-                    child_process_1.exec(`${publish} minor`, (err, stdout, stderr) => {
-                        core.info(stdout);
-                        core.error(stderr);
-                        if (err)
-                            throw err;
-                    });
+                    runComm(`${publish} minor`);
                 }
                 else if (stdout.includes('PATCH')) {
-                    child_process_1.exec(`${publish} patch`, (err, stdout, stderr) => {
-                        core.info(stdout);
-                        core.error(stderr);
-                        if (err)
-                            throw err;
-                    });
+                    runComm(`${publish} patch`);
                 }
                 else {
                     core.info(`Commit message didn't contain:
