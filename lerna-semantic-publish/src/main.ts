@@ -16,17 +16,17 @@ async function run() {
   try {
     exec(getCommitMessageCommand, (err, stdout) => {
       if (err) throw err
-      if (stdout.includes('BREAKING CHANGE')) {
+      if (stdout.includes('BREAKING CHANGE:')) {
         runComm(`${publish} major`)
-      } else if (stdout.includes('FEATURE')) {
+      } else if (stdout.startsWith('feat')) {
         runComm(`${publish} minor`)
-      } else if (stdout.includes('PATCH')) {
+      } else if (stdout.startsWith('fix')) {
         runComm(`${publish} patch`)
       } else {
         core.info(`Commit message didn't contain:
-\t* BREAKING CHANGE
-\t* FEATURE
-\t* PATCH
+\t* BREAKING CHANGE:
+\t* feat
+\t* fix
 
 Skipping publishing
 `)
