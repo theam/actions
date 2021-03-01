@@ -19,8 +19,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(require("@actions/core"));
 const child_process_1 = require("child_process");
 const getCommitMessageCommand = 'git log -n 1 --pretty="format:%s" | tail';
-const lernaPublish = 'npx lerna publish --loglevel debug -y';
-const npmPublish = 'npm publish --loglevel debug -y';
+const publish = 'npx lerna publish --loglevel debug -y';
 function runComm(command) {
     child_process_1.exec(command, (err, stdout, stderr) => {
         core.info(stdout);
@@ -30,12 +29,7 @@ function runComm(command) {
     });
 }
 function run() {
-    var _a;
     return __awaiter(this, void 0, void 0, function* () {
-        let publish = lernaPublish;
-        if ((_a = process.env) === null || _a === void 0 ? void 0 : _a.USE_NPM) {
-            publish = npmPublish;
-        }
         try {
             child_process_1.exec(getCommitMessageCommand, (err, stdout) => {
                 if (err)
