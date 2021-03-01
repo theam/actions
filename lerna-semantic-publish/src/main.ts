@@ -2,7 +2,8 @@ import * as core from '@actions/core'
 import { exec } from 'child_process'
 
 const getCommitMessageCommand = 'git log -n 1 --pretty="format:%s" | tail'
-const publish = 'npx lerna publish --loglevel debug -y'
+const lernaPublish = 'npx lerna publish --loglevel debug -y'
+const npmPublish = 'npm publish --loglevel debug -y'
 
 function runComm(command) {
   exec(command, (err, stdout, stderr) => {
@@ -13,6 +14,11 @@ function runComm(command) {
 }
 
 async function run() {
+  let publish = lernaPublish
+  if (process.env?.USE_NPM) {
+    publish = npmPublish
+  }
+  
   try {
     exec(getCommitMessageCommand, (err, stdout) => {
       if (err) throw err
